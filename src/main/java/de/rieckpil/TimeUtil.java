@@ -33,12 +33,12 @@ public class TimeUtil {
     if (periodBetween.getYears() > 0) {
       return "more than a year ago";
     } else if (periodBetween.getMonths() > 0) {
-      if(periodBetween.getMonths() == 1) {
+      if (periodBetween.getMonths() == 1) {
         return "one month ago";
       }
       return formatTimeAgo(periodBetween.getMonths(), "month");
     } else if (periodBetween.getDays() > 0) {
-      if(periodBetween.getDays() == 1) {
+      if (periodBetween.getDays() == 1) {
         return "one day ago";
       }
       return formatTimeAgo(periodBetween.getDays(), "day");
