@@ -3,6 +3,7 @@ package de.rieckpil;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,17 +20,28 @@ public class PostClient {
   }
 
   public List<Post> fetchAllPosts() {
+    int limit = 30;
+    int skip = 0;
+    long totalResult = 0;
+    List<Post> allPosts = new ArrayList<>();
 
-    PostResults result = postWebClient
-      .get()
-      .uri("/posts?limit={limit}&skip={skip}", 30, 0)
-      .accept(MediaType.APPLICATION_JSON)
-      .retrieve()
-      .bodyToMono(PostResults.class)
-      .block();
+    do {
+      PostResults result = postWebClient
+        .get()
+        .uri("/posts?limit={limit}&skip={skip}", limit, skip)
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        .bodyToMono(PostResults.class)
+        .block();
 
-    //now paginate over the result and return final list once page is reached
+      totalResult = result.total();
 
-    return result.posts();
+      skip += limit;
+
+      allPosts.addAll(result.posts());
+
+    } while (allPosts.size() < totalResult);
+
+    return allPosts;
   }
 }
